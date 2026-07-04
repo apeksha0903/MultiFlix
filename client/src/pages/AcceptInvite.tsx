@@ -57,7 +57,7 @@ export default function AcceptInvite() {
     try {
       const data = await acceptInvite(token, password);
       setAuth(data.token, data.user);
-      toast.success('Welcome to BillNest!');
+      toast.success('Welcome to MultiFlix!');
       navigate('/profiles');
     } catch {
       toast.error('Failed to accept invite');

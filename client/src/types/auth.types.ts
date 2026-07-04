@@ -6,6 +6,13 @@ export interface User {
   role: UserRole;
 }
 
+export interface JwtPayload {
+  userId: string;
+  role: UserRole;
+  billingAccountId: string;
+  email?: string;
+}
+
 export interface AuthResponse {
   token: string;
   user: User;

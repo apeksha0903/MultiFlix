@@ -10,7 +10,7 @@ import {
 import { getProfiles } from '@/api/profile.api';
 import type { Profile } from '@/types/user.types';
 
-const PROFILE_KEY = 'billnest_active_profile';
+const PROFILE_KEY = 'multiflix_active_profile';
 
 interface ProfileContextValue {
   activeProfile: Profile | null;

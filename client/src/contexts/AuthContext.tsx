@@ -7,9 +7,10 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { jwtDecode } from 'jwt-decode';
 import { login as loginApi, signup as signupApi } from '@/api/auth.api';
 import { useAuthStore } from '@/store/authStore';
-import type { User } from '@/types/auth.types';
+import type { JwtPayload, User } from '@/types/auth.types';
 
 interface AuthContextValue {
   user: User | null;
@@ -18,6 +19,7 @@ interface AuthContextValue {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
+  loginWithToken: (token: string) => void;
   logout: () => void;
 }
 
@@ -48,6 +50,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [setAuth],
   );
 
+  const loginWithToken = useCallback(
+    (token: string) => {
+      const decoded = jwtDecode<JwtPayload>(token);
+      setAuth(token, {
+        id: decoded.userId,
+        role: decoded.role,
+        email: decoded.email ?? '',
+      });
+    },
+    [setAuth],
+  );
+
   const logout = useCallback(() => {
     clearAuth();
   }, [clearAuth]);
@@ -60,9 +74,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoading,
       login,
       signup,
+      loginWithToken,
       logout,
     }),
-    [user, token, isLoading, login, signup, logout],
+    [user, token, isLoading, login, signup, loginWithToken, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

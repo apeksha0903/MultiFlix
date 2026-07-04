@@ -31,7 +31,7 @@ export default function Landing() {
         <div className="absolute inset-0 bg-gradient-to-br from-brand/20 via-background to-background" />
         <div className="relative z-10 max-w-3xl">
           <p className="mb-4 text-sm font-medium uppercase tracking-widest text-brand">
-            BillNest
+            MultiFlix
           </p>
           <h1 className="mb-6 text-4xl font-bold leading-tight md:text-6xl">
             One subscription.
@@ -39,7 +39,7 @@ export default function Landing() {
             <span className="text-brand">Independent accounts.</span>
           </h1>
           <p className="mb-10 text-lg text-foreground-secondary">
-            Share the cost, not the watch history. BillNest gives every member their own
+            Share the cost, not the watch history. MultiFlix gives every member their own
             private streaming experience under a single shared billing plan.
           </p>
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">

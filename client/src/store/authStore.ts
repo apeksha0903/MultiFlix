@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import type { User } from '@/types/auth.types';
 
-const TOKEN_KEY = 'billnest_token';
-const USER_KEY = 'billnest_user';
+const TOKEN_KEY = 'multiflix_token';
+const USER_KEY = 'multiflix_user';
 
 interface AuthState {
   token: string | null;

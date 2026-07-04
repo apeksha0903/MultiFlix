@@ -4,12 +4,15 @@ export interface AuthPayload {
   userId: string;
   role: UserRole;
   billingAccountId: string;
+  email?: string;
 }
 
 declare global {
   namespace Express {
-    interface Request {
-      user?: AuthPayload;
+    interface User extends AuthPayload {
+      token?: string;
     }
   }
 }
+
+export {};

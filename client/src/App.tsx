@@ -9,6 +9,7 @@ import { RoleGuard } from '@/components/auth/RoleGuard';
 import Landing from '@/pages/Landing';
 import Login from '@/pages/Login';
 import Signup from '@/pages/Signup';
+import AuthCallback from '@/pages/AuthCallback';
 import AcceptInvite from '@/pages/AcceptInvite';
 import ProfileSelect from '@/pages/ProfileSelect';
 import Home from '@/pages/Home';
@@ -39,6 +40,7 @@ export default function App() {
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/accept-invite" element={<AcceptInvite />} />
 
               <Route

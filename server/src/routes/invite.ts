@@ -5,6 +5,7 @@ import Invite from "../models/Invite";
 import User from "../models/User";
 import { requireAuth, requireRole } from "../middlewares/auth";
 import { signToken } from "../utils/auth";
+import { sendInviteEmail } from "../utils/mailer";
 
 const router = Router();
 
@@ -36,9 +37,17 @@ router.post("/", requireAuth, requireRole("owner"), async (req: Request, res: Re
       expiresAt,
     });
 
+    const owner = await User.findById(req.user!.userId).select("email");
+    const ownerEmail = owner?.email || "your host";
+    const inviteLink = `${process.env.CLIENT_URL}/accept-invite?token=${token}`;
+
+    sendInviteEmail(invite.email, inviteLink, ownerEmail).catch((err) => {
+      console.error("Failed to send invite email:", err);
+    });
+
     res.status(201).json({
-      message: "Invite created",
-      inviteLink: `${process.env.CLIENT_URL}/accept-invite?token=${token}`,
+      message: "Invite sent",
+      ...(process.env.NODE_ENV !== "production" && { inviteLink }),
     });
   } catch (err) {
     console.error(err);
@@ -93,6 +102,7 @@ router.post("/:token/accept", async (req: Request, res: Response) => {
       userId: user.id.toString(),
       role: user.role,
       billingAccountId: user.billingAccountId.toString(),
+      email: user.email,
     });
 
     res.status(201).json({

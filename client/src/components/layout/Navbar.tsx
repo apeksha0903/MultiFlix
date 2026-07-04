@@ -16,7 +16,7 @@ export function Navbar() {
 
   const handleLogout = () => {
     logout();
-    sessionStorage.removeItem('billnest_active_profile');
+    sessionStorage.removeItem('multiflix_active_profile');
     navigate('/login');
   };
 
@@ -25,7 +25,7 @@ export function Navbar() {
       <div className="flex h-14 items-center justify-between px-4 md:px-8">
         <div className="flex items-center gap-6">
           <Link to="/home" className="text-xl font-bold text-brand">
-            BillNest
+            MultiFlix
           </Link>
           <nav className="hidden items-center gap-4 md:flex">
             <Link to="/home" className="text-sm text-foreground-secondary hover:text-foreground">

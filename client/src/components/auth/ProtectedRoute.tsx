@@ -23,7 +23,7 @@ export function ProtectedRoute({ children, requireProfile = false }: ProtectedRo
   }
 
   if (requireProfile) {
-    const stored = sessionStorage.getItem('billnest_active_profile');
+    const stored = sessionStorage.getItem('multiflix_active_profile');
     if (!stored) {
       return <Navigate to="/profiles" replace />;
     }

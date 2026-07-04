@@ -1,8 +1,10 @@
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
+import passport from "../config/passport";
 import User from "../models/User";
 import BillingAccount from "../models/BillingAccount";
 import { signToken } from "../utils/auth";
+import { GOOGLE_OAUTH_NO_PASSWORD } from "../utils/constants";
 
 const router = Router();
 
@@ -26,8 +28,6 @@ router.post("/signup", async (req: Request, res: Response) => {
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Create the billing account first with a placeholder owner,
-    // then create the owner user, then link them together.
     const billingAccount = await BillingAccount.create({
       plan: "free",
     });
@@ -46,6 +46,7 @@ router.post("/signup", async (req: Request, res: Response) => {
       userId: user.id.toString(),
       role: user.role,
       billingAccountId: billingAccount.id.toString(),
+      email: user.email,
     });
 
     res.status(201).json({
@@ -75,6 +76,12 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    if (user.passwordHash === GOOGLE_OAUTH_NO_PASSWORD) {
+      return res.status(401).json({
+        message: "This account uses Google sign-in. Please continue with Google.",
+      });
+    }
+
     const match = await bcrypt.compare(password, user.passwordHash);
     if (!match) {
       return res.status(401).json({ message: "Invalid credentials" });
@@ -84,6 +91,7 @@ router.post("/login", async (req: Request, res: Response) => {
       userId: user.id.toString(),
       role: user.role,
       billingAccountId: user.billingAccountId.toString(),
+      email: user.email,
     });
 
     res.json({
@@ -96,4 +104,34 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-export default router;  
+/**
+ * GET /auth/google
+ * Redirects user to Google's consent screen.
+ */
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+/**
+ * GET /auth/google/callback
+ * Google redirects here after user approves.
+ */
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: `${process.env.CLIENT_URL}/login?error=google_failed`,
+  }),
+  (req: Request, res: Response) => {
+    const user = req.user as { token: string } | undefined;
+
+    if (!user?.token) {
+      return res.redirect(`${process.env.CLIENT_URL}/login?error=google_failed`);
+    }
+
+    res.redirect(`${process.env.CLIENT_URL}/auth/callback?token=${user.token}`);
+  }
+);
+
+export default router;
