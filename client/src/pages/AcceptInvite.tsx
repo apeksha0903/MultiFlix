@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getInvite, acceptInvite } from '@/api/invite.api';
-import { useAuthStore } from '@/store/authStore';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,7 +13,7 @@ export default function AcceptInvite() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token') ?? '';
   const navigate = useNavigate();
-  const setAuth = useAuthStore((s) => s.setAuth);
+  const { loginWithToken } = useAuth();
 
   const [inviteEmail, setInviteEmail] = useState('');
   const [loading, setLoading] = useState(true);
@@ -56,7 +56,7 @@ export default function AcceptInvite() {
     setSubmitting(true);
     try {
       const data = await acceptInvite(token, password);
-      setAuth(data.token, data.user);
+      await loginWithToken(data.token);
       toast.success('Welcome to MultiFlix!');
       navigate('/profiles');
     } catch {

@@ -17,6 +17,17 @@ const INVITE_EXPIRY_DAYS = 7;
  */
 router.post("/", requireAuth, requireRole("owner"), async (req: Request, res: Response) => {
   try {
+    const memberCount = await User.countDocuments({
+      billingAccountId: req.user!.billingAccountId,
+      role: "member",
+    });
+    if (memberCount >= 1) {
+      return res.status(403).json({
+        message: "Member limit reached. Your plan allows 1 member in addition to yourself.",
+        limitReached: true,
+      });
+    }
+
     const { email } = req.body;
     if (!email) {
       return res.status(400).json({ message: "Email is required" });

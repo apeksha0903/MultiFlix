@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 
@@ -8,7 +9,15 @@ interface PageWrapperProps {
 
 export function PageWrapper({ children, showNav = true }: PageWrapperProps) {
   if (!showNav) {
-    return <main className="min-h-screen bg-background">{children}</main>;
+    return (
+      <motion.main
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="ambient-shell min-h-screen bg-background"
+      >
+        {children}
+      </motion.main>
+    );
   }
 
   return (
@@ -16,7 +25,13 @@ export function PageWrapper({ children, showNav = true }: PageWrapperProps) {
       <Navbar />
       <div className="flex flex-1">
         <Sidebar />
-        <main className="flex-1 overflow-x-hidden">{children}</main>
+        <motion.main
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="ambient-shell flex-1 overflow-x-hidden"
+        >
+          {children}
+        </motion.main>
       </div>
     </div>
   );

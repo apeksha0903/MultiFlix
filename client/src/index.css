@@ -13,6 +13,11 @@
     @apply bg-background text-foreground font-sans antialiased;
     margin: 0;
     min-height: 100vh;
+    background-image:
+      radial-gradient(circle at top left, rgba(124, 58, 237, 0.16), transparent 40%),
+      radial-gradient(circle at bottom right, rgba(37, 99, 235, 0.16), transparent 40%),
+      linear-gradient(135deg, #09090B 0%, #111118 100%);
+    background-attachment: fixed;
   }
 
   #root {
@@ -28,5 +33,54 @@
 
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  .ambient-shell {
+    background-image:
+      radial-gradient(circle at top left, rgba(124, 58, 237, 0.16), transparent 36%),
+      radial-gradient(circle at bottom right, rgba(37, 99, 235, 0.16), transparent 36%),
+      linear-gradient(125deg, rgba(9, 9, 11, 0.98), rgba(17, 17, 24, 0.96));
+    background-size: 200% 200%;
+    animation: ambientMove 18s ease infinite;
+  }
+
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .shimmer-surface {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.04));
+    background-size: 300% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+@keyframes ambientMove {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

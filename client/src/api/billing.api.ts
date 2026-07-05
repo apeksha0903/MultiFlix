@@ -9,3 +9,14 @@ export const getBillingMembers = () =>
 
 export const removeMember = (userId: string) =>
   api.delete(`/billing/members/${userId}`).then((r) => r.data);
+
+export interface MyPlan {
+  plan: string;
+  subscriptionStatus: string;
+  currentPeriodEnd?: string | null;
+  ownerEmail?: string;
+  memberCount: number;
+}
+
+export const getMyPlan = () =>
+  api.get<MyPlan>('/billing/my-plan').then((r) => r.data);

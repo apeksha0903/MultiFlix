@@ -18,13 +18,26 @@ router.get("/", requireAuth, async (req: Request, res: Response) => {
  * Create a profile under the authenticated user's own account.
  */
 router.post("/", requireAuth, async (req: Request, res: Response) => {
-  const { name } = req.body;
-  if (!name) {
-    return res.status(400).json({ message: "Name is required" });
-  }
+  try {
+    const profileCount = await Profile.countDocuments({ userId: req.user!.userId });
+    if (profileCount >= 2) {
+      return res.status(403).json({
+        message: "Profile limit reached. Maximum 2 profiles per account.",
+        limitReached: true,
+      });
+    }
 
-  const profile = await Profile.create({ name, userId: req.user!.userId });
-  res.status(201).json(profile);
+    const { name } = req.body;
+    if (!name) {
+      return res.status(400).json({ message: "Name is required" });
+    }
+
+    const profile = await Profile.create({ name, userId: req.user!.userId });
+    res.status(201).json(profile);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 /**

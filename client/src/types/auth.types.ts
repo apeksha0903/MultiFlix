@@ -2,8 +2,14 @@ export type UserRole = 'owner' | 'member';
 
 export interface User {
   id: string;
+  _id?: string;
   email: string;
   role: UserRole;
+  displayName?: string;
+  avatarStyle?: string;
+  onboardingComplete: boolean;
+  createdAt?: string;
+  isGoogleUser?: boolean;
 }
 
 export interface JwtPayload {

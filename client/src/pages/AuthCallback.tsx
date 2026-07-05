@@ -16,8 +16,7 @@ export default function AuthCallback() {
       return;
     }
 
-    loginWithToken(token);
-    navigate('/profiles');
+    void loginWithToken(token).then(() => navigate('/profiles'));
   }, [searchParams, navigate, loginWithToken]);
 
   return (

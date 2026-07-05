@@ -29,7 +29,7 @@ export function ProfileSwitcher() {
           Switch Profile
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => navigate('/settings')}>Settings</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate('/account')}>Account settings</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Bell, LogOut, LayoutDashboard } from 'lucide-react';
+import { Search, LogOut, LayoutDashboard, UserCog } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { ProfileSwitcher } from '@/components/profile/ProfileSwitcher';
+import { UserAvatar } from '@/components/profile/UserAvatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,10 +11,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { CommandPalette } from '@/components/ui/command-palette';
+import { NotificationCenter } from '@/components/ui/notification-center';
 
 export function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [paletteOpen, setPaletteOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -37,45 +42,37 @@ export function Navbar() {
             <Link to="/history" className="text-sm text-foreground-secondary hover:text-foreground">
               History
             </Link>
-            {user?.role === 'owner' && (
-              <Link to="/dashboard" className="text-sm text-foreground-secondary hover:text-foreground">
-                Dashboard
-              </Link>
-            )}
+            <Link to="/dashboard" className="text-sm text-foreground-secondary hover:text-foreground">
+              Dashboard
+            </Link>
           </nav>
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => navigate('/search')}
+            onClick={() => setPaletteOpen(true)}
             className="rounded-md p-2 text-foreground-secondary hover:bg-background-tertiary hover:text-foreground"
-            aria-label="Search"
+            aria-label="Open command palette"
           >
             <Search className="h-5 w-5" />
           </button>
-          <button
-            className="rounded-md p-2 text-foreground-secondary hover:bg-background-tertiary"
-            aria-label="Notifications"
-          >
-            <Bell className="h-5 w-5" />
-          </button>
+          <NotificationCenter />
           <ProfileSwitcher />
           <DropdownMenu>
             <DropdownMenuTrigger className="rounded-md p-2 text-foreground-secondary hover:bg-background-tertiary">
               <span className="sr-only">User menu</span>
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand/20 text-xs font-semibold text-brand">
-                {user?.email?.[0]?.toUpperCase()}
-              </div>
+              {user?.email && <UserAvatar email={user.email} avatarStyle={user.avatarStyle} size={28} className="h-7 w-7" />}
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem disabled className="text-xs text-foreground-muted">
                 {user?.email}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              {user?.role === 'owner' && (
-                <DropdownMenuItem onClick={() => navigate('/dashboard')}>
-                  <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
-                </DropdownMenuItem>
-              )}
+              <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/account')}>
+                <UserCog className="mr-2 h-4 w-4" /> Account
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" /> Logout
               </DropdownMenuItem>
@@ -83,6 +80,7 @@ export function Navbar() {
           </DropdownMenu>
         </div>
       </div>
+      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
     </header>
   );
 }

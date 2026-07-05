@@ -7,13 +7,42 @@ import { requireAuth, requireRole } from "../middlewares/auth";
 const router = Router();
 
 router.use(requireAuth);
-router.use(requireRole("owner"));
+
+/**
+ * GET /billing/my-plan
+ * Returns the current user's plan summary.
+ */
+router.get("/my-plan", async (req: Request, res: Response) => {
+  try {
+    const billingAccount = await BillingAccount.findById(req.user!.billingAccountId);
+    if (!billingAccount) {
+      return res.status(404).json({ message: "Billing account not found" });
+    }
+
+    const owner = await User.findById(billingAccount.ownerUserId).select("email");
+    const memberCount = await User.countDocuments({
+      billingAccountId: req.user!.billingAccountId,
+      role: "member",
+    });
+
+    res.json({
+      plan: billingAccount.plan,
+      subscriptionStatus: billingAccount.subscriptionStatus,
+      currentPeriodEnd: billingAccount.currentPeriodEnd,
+      ownerEmail: owner?.email,
+      memberCount,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch plan info" });
+  }
+});
 
 /**
  * GET /billing
  * Returns the owner's billing account details.
  */
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", requireRole("owner"), async (req: Request, res: Response) => {
   const account = await BillingAccount.findById(req.user!.billingAccountId);
   if (!account) {
     return res.status(404).json({ message: "Billing account not found" });
@@ -25,7 +54,7 @@ router.get("/", async (req: Request, res: Response) => {
  * GET /billing/members
  * Returns all users on the billing account plus pending invites.
  */
-router.get("/members", async (req: Request, res: Response) => {
+router.get("/members", requireRole("owner"), async (req: Request, res: Response) => {
   const users = await User.find({
     billingAccountId: req.user!.billingAccountId,
   }).sort({ createdAt: 1 });
@@ -59,7 +88,7 @@ router.get("/members", async (req: Request, res: Response) => {
  * DELETE /billing/members/:userId
  * Removes a member from the billing account (cannot remove owner).
  */
-router.delete("/members/:userId", async (req: Request, res: Response) => {
+router.delete("/members/:userId", requireRole("owner"), async (req: Request, res: Response) => {
   const member = await User.findOne({
     _id: req.params.userId,
     billingAccountId: req.user!.billingAccountId,
