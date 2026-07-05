@@ -8,6 +8,7 @@ import { useTrending } from '@/hooks/useTrending';
 import { useProfile } from '@/hooks/useProfile';
 import { useWatchlist } from '@/hooks/useWatchlist';
 import { useContinueWatching } from '@/hooks/useContinueWatching';
+import { useRecommendations } from '@/hooks/useRecommendations';
 import { enrichMediaItems } from '@/utils/enrichMedia';
 import type { MediaType } from '@/types/tmdb.types';
 
@@ -18,6 +19,7 @@ export default function Home() {
   const trendingMovies = useTrending('movie');
   const trendingTV = useTrending('tv');
   const { data: continueData, isLoading: continueLoading } = useContinueWatching(profileId);
+  const { data: recommendations, isLoading: recsLoading } = useRecommendations(profileId, 'movie');
   const watchlist = useWatchlist(profileId);
 
   const watchlistEnriched = useQuery({
@@ -76,6 +78,22 @@ export default function Home() {
           inWatchlist={watchlist.isInWatchlist}
           onToggleWatchlist={handleToggleWatchlist}
         />
+        {activeProfile && (
+          <ContentRow
+            title="Recommended for you"
+            subtitle={
+              recommendations && recommendations.length > 0
+                ? 'Based on your watch history'
+                : 'Popular right now'
+            }
+            items={recommendations ?? []}
+            isLoading={recsLoading}
+            mediaType="movie"
+            emptyMessage="Start watching something to get personalized recommendations"
+            inWatchlist={watchlist.isInWatchlist}
+            onToggleWatchlist={handleToggleWatchlist}
+          />
+        )}
         <ContentRow
           title="Trending TV Shows"
           items={trendingTV.data?.results ?? []}

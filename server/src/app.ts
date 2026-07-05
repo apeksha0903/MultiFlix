@@ -11,6 +11,7 @@ import watchlistRoutes from "./routes/watchlist";
 import continueWatchingRoutes from "./routes/continueWatching";
 import billingRoutes from "./routes/billing";
 import accountRoutes from "./routes/account";
+import recommendationRoutes from "./routes/recommendations";
 const app = express();
 
 app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
@@ -38,4 +39,5 @@ app.use("/watchlist", watchlistRoutes);
 app.use("/continue-watching", continueWatchingRoutes);
 app.use("/billing", billingRoutes);
 app.use("/account", accountRoutes);
+app.use("/recommendations", recommendationRoutes);
 export default app;
