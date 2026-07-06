@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Label } from '@/components/ui/label';
 import toast from 'react-hot-toast';
 
@@ -69,12 +70,12 @@ export default function Signup() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <PasswordInput id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
             {errors.password && <p className="text-xs text-danger">{errors.password}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirm">Confirm password</Label>
-            <Input id="confirm" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+            <PasswordInput id="confirm" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
             {errors.confirm && <p className="text-xs text-danger">{errors.confirm}</p>}
           </div>
           <Button type="submit" className="w-full" disabled={loading}>

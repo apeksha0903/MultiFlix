@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getInvite, acceptInvite } from '@/api/invite.api';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Label } from '@/components/ui/label';
 import { QueryState } from '@/components/ui/query-state';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -91,12 +91,12 @@ export default function AcceptInvite() {
             <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border border-border bg-background-secondary p-6">
               <div className="space-y-2">
                 <Label htmlFor="password">Create password</Label>
-                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <PasswordInput id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 {formErrors.password && <p className="text-xs text-danger">{formErrors.password}</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirm">Confirm password</Label>
-                <Input id="confirm" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+                <PasswordInput id="confirm" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
                 {formErrors.confirm && <p className="text-xs text-danger">{formErrors.confirm}</p>}
               </div>
               <Button type="submit" className="w-full" disabled={submitting}>

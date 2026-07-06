@@ -6,6 +6,7 @@ import { PageWrapper } from '@/components/layout/PageWrapper';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -158,11 +159,11 @@ export default function AccountSettings() {
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="current-password">Current password</Label>
-                      <Input id="current-password" type="password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} />
+                      <PasswordInput id="current-password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="new-password">New password</Label>
-                      <Input id="new-password" type="password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} />
+                      <PasswordInput id="new-password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} />
                       <div className="h-1.5 rounded-full bg-white/10">
                         <div className={`h-1.5 rounded-full ${strength.color}`} style={{ width: strength.width }} />
                       </div>
@@ -170,7 +171,7 @@ export default function AccountSettings() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="confirm-password">Confirm new password</Label>
-                      <Input id="confirm-password" type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} />
+                      <PasswordInput id="confirm-password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} />
                     </div>
                     <Button
                       onClick={handlePasswordChange}
