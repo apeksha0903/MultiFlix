@@ -16,7 +16,7 @@ function getResendClient(): Resend {
 export async function sendWithResend(to: string, subject: string, html: string): Promise<void> {
   const resend = getResendClient();
   const { error } = await resend.emails.send({
-    from: process.env.RESEND_FROM || "MultiFlix <noreply@multiflix.dev>",
+    from: process.env.RESEND_FROM || "MultiFlix <onboarding@resend.dev>",
     to,
     subject,
     html,
