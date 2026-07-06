@@ -12,22 +12,40 @@ class GmailProvider implements EmailProvider {
       throw new Error('Gmail configuration is incomplete. Check GMAIL_USER and GMAIL_APP_PASSWORD.');
     }
 
+    const port = Number(process.env.GMAIL_PORT || 587);
+    const secure = process.env.GMAIL_SECURE === 'true' || (port === 465 && process.env.GMAIL_SECURE !== 'false');
+
     this.transport = nodemailer.createTransport({
-      service: 'gmail',
+      host: process.env.GMAIL_HOST || 'smtp.gmail.com',
+      port,
+      secure,
+      requireTLS: true,
       auth: {
         user,
         pass: appPassword,
+      },
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 20000,
+      tls: {
+        rejectUnauthorized: true,
+        minVersion: 'TLSv1.2',
       },
     });
   }
 
   async sendEmail(to: string, subject: string, html: string): Promise<void> {
-    await this.transport.sendMail({
-      from: `MultiFlix <${process.env.GMAIL_USER}>`,
-      to,
-      subject,
-      html,
-    });
+    try {
+      await this.transport.sendMail({
+        from: `MultiFlix <${process.env.GMAIL_USER}>`,
+        to,
+        subject,
+        html,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      throw new Error(`Gmail email delivery failed: ${message}`);
+    }
   }
 }
 

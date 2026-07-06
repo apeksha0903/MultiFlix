@@ -9,8 +9,14 @@ export function createEmailProvider(providerName?: string): EmailProvider {
   switch (provider) {
     case 'resend':
       return createResendProvider();
-    case 'gmail':
-      return createGmailProvider();
+    case 'gmail': {
+      try {
+        return createGmailProvider();
+      } catch (error) {
+        console.warn('Gmail provider unavailable, falling back to Mailtrap:', error);
+        return createMailtrapProvider();
+      }
+    }
     case 'mailtrap':
     default:
       return createMailtrapProvider();
